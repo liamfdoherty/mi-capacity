@@ -30,7 +30,12 @@ def compute_complexity(untrained_model_architecture, n_instances, batched_data, 
             
             with torch.no_grad():
                 scores = model(samples)
-            reward = loss_function(scores, labels).detach().cpu().numpy()
+
+            if autoencoder:
+                reward = loss_function(scores, samples).detach().cpu().numpy()
+            else:
+                reward = loss_function(scores, labels).detach().cpu().numpy()
+                
             if reward.ndim == 0:
                 reward = np.expand_dims(reward, axis = 0)
             local_rewards.extend(reward)
